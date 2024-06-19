@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .widget {
+            width: 300px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+        .widget h2 {
+            margin: 0 0 20px 0;
+        }
+        .widget select, .widget input[type="text"], .widget input[type="email"], .widget input[type="date"], .widget input[type="time"], .widget input[type="number"], .widget input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #museumData {
+            width: 100%;
+            height: 200px;
+            border: 1px solid #000;
+            overflow: auto;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+    <script>
+        function fetchMuseumData() {
+            var tableName = document.getElementById("table_name").value;
+            if (tableName) {
+                fetch('/get_event_column?table_name=' + tableName)
+                    .then(response => response.json())
+                    .then(data => {
+                        var eventSelect = document.getElementById("event");
+                        eventSelect.innerHTML = '<option value="">Выберите мероприятие</option>';
+                        data.column_data.forEach(function(event) {
+                            var option = document.createElement("option");
+                            option.value = event;
+                            option.textContent = event;
+                            eventSelect.appendChild(option);
+                        });
+
+                        fetch('/get_museum_data?table_name=' + tableName)
+                            .then(response => response.json())
+                            .then(data => {
+                                var container = document.getElementById("museumData");
+                                container.innerHTML = data.html;
+                                container.style.display = 'block';
+                            });
+                    });
+            } else {
+                document.getElementById("museumData").style.display = 'none';
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="widget">
+        <h2>Регистрация</h2>
+        <form action="/register" method="post">
+            <label for="full_name">Полное имя:</label><br>
+            <input type="text" id="full_name" name="full_name" required><br><br>
+            
+            <label for="email">Электронная почта:</label><br>
+            <input type="email" id="email" name="email" required><br><br>
+            
+            <label for="phone_number">Номер телефона:</label><br>
+            <input type="text" id="phone_number" name="phone_number" required><br><br>
+            
+            
+            <label for="table_name">Музей:</label><br>
+            <select id="table_name" name="table_name" required onchange="fetchMuseumData()">
+                <option value="">Выберите музей</option>
+                {% for table in tables %}
+                    <option value="{{ table }}" {% if table == request.args.get('table_name') %}selected{% endif %}>{{ table }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <div id="museumData"></div>
+
+            <label for="event">Мероприятие:</label><br>
+            <select id="event" name="event" required>
+                <option value="">Выберите мероприятие</option>
+            </select><br><br>
+            
+            <br><br>
+            <input type="submit" value="Зарегистрироваться">
+        </form>
+        
+        <br>
+        <a href="/">На главную</a>
+    </div>
+</body>
+</html>

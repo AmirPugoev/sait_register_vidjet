@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Event</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .widget {
+            width: 300px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+        .widget h2 {
+            margin: 0 0 20px 0;
+        }
+        .widget select, .widget input[type="text"], .widget input[type="date"], .widget input[type="time"], .widget input[type="number"], .widget input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="widget">
+        <h2>Add Event</h2>
+        <form action="/add_event" method="post">
+            <label for="table_name">Table Name:</label><br>
+            <select id="table_name" name="table_name" required>
+                <option value="">Select a table</option>
+                {% for table in tables %}
+                    <option value="{{ table }}">{{ table }}</option>
+                {% endfor %}
+            </select><br>
+            <label for="event">Event:</label><br>
+            <input type="text" id="event" name="event" required><br>
+            <label for="event_date">Event Date:</label><br>
+            <input type="date" id="event_date" name="event_date" required><br>
+            <label for="start_time">Start Time:</label><br>
+            <input type="time" id="start_time" name="start_time" required><br>
+            <label for="end_time">End Time:</label><br>
+            <input type="time" id="end_time" name="end_time" required><br>
+            <label for="address">Address:</label><br>
+            <input type="text" id="address" name="address" required><br>
+            <label for="ticket_count">Ticket Count:</label><br>
+            <input type="number" id="ticket_count" name="ticket_count" required><br>
+            <input type="submit" value="Add Event">
+        </form>
+    </div>
+</body>
+</html>
